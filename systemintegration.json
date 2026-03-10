@@ -10,7 +10,7 @@
     {
       "id": "crm",
       "name": "NTI FM",
-      "color": "#3498db",
+      "color": "#e91e63",
       "x": 200,
       "y": 150
     },
@@ -37,8 +37,8 @@
     },
     {
       "id": "email",
-      "name": "Email Platform",
-      "color": "#1abc9c",
+      "name": "NTI Vedligehold",
+      "color": "#e91e63",
       "x": 160,
       "y": 360
     }
