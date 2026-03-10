@@ -1,0 +1,109 @@
+{
+  "systems": [
+    {
+      "id": "erp",
+      "name": "EG Bolig",
+      "color": "#e74c3c",
+      "x": 996,
+      "y": 385
+    },
+    {
+      "id": "crm",
+      "name": "NTI FM",
+      "color": "#e91e63",
+      "x": 688,
+      "y": 262
+    },
+    {
+      "id": "webshop",
+      "name": "Azure AD",
+      "color": "#2ecc71",
+      "x": 1078,
+      "y": 160
+    },
+    {
+      "id": "bi",
+      "name": "Cognos",
+      "color": "#3498db",
+      "x": 967,
+      "y": 582
+    },
+    {
+      "id": "wms",
+      "name": "Visma",
+      "color": "#9b59b6",
+      "x": 1239,
+      "y": 381
+    },
+    {
+      "id": "email",
+      "name": "NTI Vedligehold",
+      "color": "#e91e63",
+      "x": 669,
+      "y": 487
+    },
+    {
+      "id": "hr-on_1773154614076",
+      "name": "HR-ON",
+      "color": "#3498db",
+      "x": 1247.8375698832413,
+      "y": 273.15791226192823
+    },
+    {
+      "id": "myfone_1773154764148",
+      "name": "Myfone",
+      "color": "#f39c12",
+      "x": 782.0768067046581,
+      "y": 585.2758364449487
+    },
+    {
+      "id": "xink_1773154796719",
+      "name": "Xink",
+      "color": "#8bc34a",
+      "x": 1282.9695018382133,
+      "y": 153.67533984994816
+    }
+  ],
+  "connections": [
+    {
+      "from": "erp",
+      "to": "crm",
+      "direction": "both"
+    },
+    {
+      "from": "erp",
+      "to": "webshop",
+      "direction": "to"
+    },
+    {
+      "from": "erp",
+      "to": "bi",
+      "direction": "to"
+    },
+    {
+      "from": "erp",
+      "to": "wms",
+      "direction": "both"
+    },
+    {
+      "from": "crm",
+      "to": "email",
+      "direction": "to"
+    },
+    {
+      "from": "email",
+      "to": "erp",
+      "direction": "both"
+    },
+    {
+      "from": "myfone_1773154764148",
+      "to": "bi",
+      "direction": "from"
+    },
+    {
+      "from": "xink_1773154796719",
+      "to": "webshop",
+      "direction": "to"
+    }
+  ]
+}
