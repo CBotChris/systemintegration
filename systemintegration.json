@@ -2,73 +2,45 @@
   "systems": [
     {
       "id": "erp",
-      "name": "EG Bolig",
+      "name": "ERP System",
       "color": "#e74c3c",
-      "x": 730,
-      "y": 438
+      "x": 400,
+      "y": 250
     },
     {
       "id": "crm",
       "name": "NTI FM",
-      "color": "#e91e63",
-      "x": 422,
-      "y": 315
+      "color": "#3498db",
+      "x": 200,
+      "y": 150
     },
     {
       "id": "webshop",
-      "name": "Azure AD",
+      "name": "Webshop",
       "color": "#2ecc71",
-      "x": 812,
-      "y": 213
+      "x": 620,
+      "y": 150
     },
     {
       "id": "bi",
-      "name": "Cognos",
-      "color": "#3498db",
-      "x": 702,
-      "y": 635
+      "name": "BI / Rapportering",
+      "color": "#f39c12",
+      "x": 400,
+      "y": 430
     },
     {
       "id": "wms",
-      "name": "Visma",
+      "name": "WMS / Lager",
       "color": "#9b59b6",
-      "x": 973,
-      "y": 434
+      "x": 650,
+      "y": 380
     },
     {
       "id": "email",
-      "name": "NTI Vedligehold",
-      "color": "#e91e63",
-      "x": 403,
-      "y": 540
-    },
-    {
-      "id": "hr-on_1773154614076",
-      "name": "HR-ON",
-      "color": "#9b59b6",
-      "x": 967.8375698832413,
-      "y": 516.1579122619282
-    },
-    {
-      "id": "myfone_1773154764148",
-      "name": "Myfone",
-      "color": "#f39c12",
-      "x": 517.0768067046581,
-      "y": 638.2758364449487
-    },
-    {
-      "id": "xink_1773154796719",
-      "name": "Xink",
-      "color": "#8bc34a",
-      "x": 1016.9695018382133,
-      "y": 206.67533984994816
-    },
-    {
-      "id": "nti_bitco_1773154853738",
-      "name": "NTI BITCO",
-      "color": "#e91e63",
-      "x": 286.9994996366666,
-      "y": 104.03158304060253
+      "name": "Email Platform",
+      "color": "#1abc9c",
+      "x": 160,
+      "y": 360
     }
   ],
   "connections": [
@@ -80,7 +52,7 @@
     {
       "from": "erp",
       "to": "webshop",
-      "direction": "to"
+      "direction": "from"
     },
     {
       "from": "erp",
@@ -95,27 +67,12 @@
     {
       "from": "crm",
       "to": "email",
-      "direction": "to"
-    },
-    {
-      "from": "email",
-      "to": "erp",
-      "direction": "both"
-    },
-    {
-      "from": "myfone_1773154764148",
-      "to": "bi",
       "direction": "from"
     },
     {
-      "from": "xink_1773154796719",
-      "to": "webshop",
+      "from": "webshop",
+      "to": "wms",
       "direction": "to"
-    },
-    {
-      "from": "nti_bitco_1773154853738",
-      "to": "crm",
-      "direction": "from"
     }
   ]
 }
