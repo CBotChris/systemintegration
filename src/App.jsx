@@ -103,25 +103,32 @@ export default function App() {
     document.head.appendChild(script);
   }, []);
 
-  // On first load: try to fetch shared JSON file, fall back to localStorage
+  // On first load: localStorage first, then check for shared JSON override
   useEffect(() => {
-    fetch("./systemintegration.json?t=" + Date.now())
-      .then(r => { if (!r.ok) throw new Error(); return r.json(); })
-      .then(({ systems: s, connections: c }) => {
-        if (Array.isArray(s) && Array.isArray(c)) {
-          setSystems(s); setConnections(c);
-        }
-      })
-      .catch(() => {
-        // No shared file — load from localStorage instead
-        try {
-          const s = localStorage.getItem("si_systems");
-          const c = localStorage.getItem("si_connections");
-          if (s) setSystems(JSON.parse(s));
-          if (c) setConnections(JSON.parse(c));
-        } catch {}
-      })
-      .finally(() => setDataLoaded(true));
+    // Always load localStorage first so personal work is never lost
+    try {
+      const s = localStorage.getItem("si_systems");
+      const c = localStorage.getItem("si_connections");
+      if (s) setSystems(JSON.parse(s));
+      if (c) setConnections(JSON.parse(c));
+    } catch {}
+
+    // Then check if a shared JSON file exists — if so, it overrides (for colleagues)
+    // Only override if localStorage is empty (first time visitor)
+    const hasLocal = !!localStorage.getItem("si_systems");
+    if (!hasLocal) {
+      fetch("./systemintegration.json?t=" + Date.now())
+        .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(({ systems: s, connections: c }) => {
+          if (Array.isArray(s) && Array.isArray(c)) {
+            setSystems(s); setConnections(c);
+          }
+        })
+        .catch(() => {})
+        .finally(() => setDataLoaded(true));
+    } else {
+      setDataLoaded(true);
+    }
   }, []);
 
   // Auto-save to localStorage whenever data changes
