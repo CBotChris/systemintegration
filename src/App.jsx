@@ -93,6 +93,8 @@ export default function App() {
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [toast, setToast] = useState(null);
   const [editingConn, setEditingConn] = useState(null); // index of connection being edited
+  const [multiSelected, setMultiSelected] = useState(new Set()); // ids of multi-selected nodes
+  const [groupDragStart, setGroupDragStart] = useState(null); // SVG coords when group drag started
   const svgRef = useRef();
   const fileInputRef = useRef();
 
@@ -140,14 +142,56 @@ export default function App() {
     try { localStorage.setItem("si_connections", JSON.stringify(connections)); } catch {}
   }, [connections]);
 
-  const exportJSON = () => {
+  const exportJSON = async () => {
     const data = JSON.stringify({ systems, connections }, null, 2);
+    const token = import.meta.env.VITE_GITHUB_TOKEN;
+    const repo = "cbotchris/systemintegration";
+    const filePath = "systemintegration.json";
+
+    if (token) {
+      try {
+        showToast("success", "Gemmer til GitHub...");
+        // Check if file already exists (need its SHA to update)
+        let sha = undefined;
+        const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }
+        });
+        if (check.ok) {
+          const existing = await check.json();
+          sha = existing.sha;
+        }
+        // Push file
+        const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+          method: "PUT",
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: "Opdater systemintegration kort",
+            content: btoa(unescape(encodeURIComponent(data))),
+            ...(sha ? { sha } : {})
+          })
+        });
+        if (res.ok) {
+          showToast("success", "✓ Gemt og delt! Kolleger ser det nye kort om ~1 minut.");
+        } else {
+          const err = await res.json();
+          throw new Error(err.message || "Ukendt fejl");
+        }
+      } catch (err) {
+        showToast("error", `GitHub fejl: ${err.message} — downloader lokalt i stedet.`);
+        _downloadJSON(data);
+      }
+    } else {
+      _downloadJSON(data);
+    }
+  };
+
+  const _downloadJSON = (data) => {
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = "systemintegration.json"; a.click();
-    showToast("success", "Gemt! Upload systemintegration.json til GitHub for at dele med andre.");
     URL.revokeObjectURL(url);
+    showToast("success", "Downloadet lokalt — upload til GitHub for at dele.");
   };
 
   const importJSONRef = useRef();
@@ -191,10 +235,16 @@ export default function App() {
     const pt = svg.createSVGPoint();
     pt.x = e.clientX; pt.y = e.clientY;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-    const sys = systems.find(s => s.id === id);
-    setDragging(id);
-    setOffset({ x: svgP.x - sys.x, y: svgP.y - sys.y });
-  }, [systems]);
+    if (multiSelected.has(id) && multiSelected.size > 1) {
+      // Start group drag
+      setGroupDragStart({ x: svgP.x, y: svgP.y });
+      setDragging("__group__");
+    } else {
+      const sys = systems.find(s => s.id === id);
+      setDragging(id);
+      setOffset({ x: svgP.x - sys.x, y: svgP.y - sys.y });
+    }
+  }, [systems, multiSelected]);
 
   const handleMouseMove = useCallback((e) => {
     if (!dragging) return;
@@ -202,10 +252,17 @@ export default function App() {
     const pt = svg.createSVGPoint();
     pt.x = e.clientX; pt.y = e.clientY;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
-    setSystems(prev => prev.map(s => s.id === dragging ? { ...s, x: svgP.x - offset.x, y: svgP.y - offset.y } : s));
-  }, [dragging, offset]);
+    if (dragging === "__group__") {
+      const dx = svgP.x - groupDragStart.x;
+      const dy = svgP.y - groupDragStart.y;
+      setSystems(prev => prev.map(s => multiSelected.has(s.id) ? { ...s, x: s.x + dx, y: s.y + dy } : s));
+      setGroupDragStart({ x: svgP.x, y: svgP.y });
+    } else {
+      setSystems(prev => prev.map(s => s.id === dragging ? { ...s, x: svgP.x - offset.x, y: svgP.y - offset.y } : s));
+    }
+  }, [dragging, offset, groupDragStart, multiSelected]);
 
-  const handleMouseUp = useCallback(() => setDragging(null), []);
+  const handleMouseUp = useCallback(() => { setDragging(null); setGroupDragStart(null); }, []);
 
   const addSystem = () => {
     if (!newSys.name.trim()) return;
@@ -338,28 +395,46 @@ export default function App() {
 
   const renderNode = (s) => {
     const isSelected = selected === s.id;
+    const isMultiSel = multiSelected.has(s.id);
     const inChain = chain?.all.has(s.id);
     const isUpstream = chain?.upstream.has(s.id);
     const isDownstream = chain?.downstream.has(s.id);
     const isDirect = chain?.direct.has(s.id);
-    const isDimmed = selected && !isSelected && !inChain;
+    const isDimmed = selected && !isSelected && !inChain && !isMultiSel;
     const hasNoConnections = !connections.some(c => c.from === s.id || c.to === s.id);
     const r = getNodeRadius(s.id, connections);
 
     let opacity = 1;
     if (isDimmed) opacity = 0.1;
-    else if (!selected && hasNoConnections) opacity = 0.4;
+    else if (!selected && !isMultiSel && hasNoConnections) opacity = 0.4;
 
-    const ringColor = isSelected ? "#fff" : isUpstream ? "#3498db" : isDownstream ? "#2ecc71" : isDirect ? s.color : null;
-    const ringWidth = isSelected ? 3 : 2;
+    const ringColor = isMultiSel ? "#f39c12" : isSelected ? "#fff" : isUpstream ? "#3498db" : isDownstream ? "#2ecc71" : isDirect ? s.color : null;
+    const ringWidth = isSelected || isMultiSel ? 3 : 2;
 
     return (
       <g key={s.id} transform={`translate(${s.x},${s.y})`}
-        style={{ cursor: dragging ? "grabbing" : "pointer", userSelect: "none", transition: "opacity 0.2s" }}
+        style={{ cursor: dragging === "__group__" && isMultiSel ? "grabbing" : dragging && dragging !== "__group__" ? "grabbing" : "pointer", userSelect: "none", transition: "opacity 0.2s" }}
         onMouseDown={(e) => handleMouseDown(e, s.id)}
-        onClick={(e) => { e.stopPropagation(); setSelected(s.id === selected ? null : s.id); setPanel(s.id === selected ? "overview" : "detail"); setEditingConn(null); }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (e.shiftKey) {
+            // Shift-click: toggle in multiSelected, clear single select
+            setMultiSelected(prev => {
+              const next = new Set(prev);
+              next.has(s.id) ? next.delete(s.id) : next.add(s.id);
+              return next;
+            });
+            setSelected(null); setPanel("overview");
+          } else {
+            // Normal click: clear multiselect, single select
+            setMultiSelected(new Set());
+            setSelected(s.id === selected ? null : s.id);
+            setPanel(s.id === selected ? "overview" : "detail");
+            setEditingConn(null);
+          }
+        }}
         opacity={opacity}>
-        {(isSelected || inChain) && <circle r={r + 10} fill={s.color} opacity={0.12} />}
+        {(isSelected || inChain || isMultiSel) && <circle r={r + 10} fill={s.color} opacity={0.12} />}
         {ringColor && <circle r={r + 4} fill="none" stroke={ringColor} strokeWidth={ringWidth} opacity={0.9} />}
         <circle r={r} fill={isDimmed ? "#0d0d1a" : s.color} stroke="#0d0d1a" strokeWidth={2} />
         <text textAnchor="middle" dy="0.35em" fill="#fff" fontSize={Math.max(7, r * 0.34)} fontWeight="700" fontFamily="'DM Sans', sans-serif" style={{ pointerEvents: "none" }}>
@@ -479,6 +554,14 @@ export default function App() {
                     onBlur={e => e.target.style.borderBottomColor = "#2a2a5a"}
                   />
                 </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 14 }}>
+                  {COLORS.map(c => (
+                    <div key={c} onClick={() => setSystems(prev => prev.map(s => s.id === selected ? { ...s, color: c } : s))}
+                      style={{ width: 20, height: 20, borderRadius: "50%", background: c, cursor: "pointer", border: sys.color === c ? "2px solid #fff" : "2px solid transparent", transition: "transform 0.1s" }}
+                      onMouseEnter={e => e.currentTarget.style.transform = "scale(1.2)"}
+                      onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"} />
+                  ))}
+                </div>
 
                 {/* Upstream */}
                 {upstream.length > 0 && <>
@@ -577,7 +660,7 @@ export default function App() {
         <div style={{ flex: 1, position: "relative" }}>
           <svg ref={svgRef} width="100%" height="100%" style={{ display: "block", minHeight: 520 }}
             onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
-            onClick={() => { if (!dragging) { setSelected(null); setPanel("overview"); setEditingConn(null); } }}>
+            onClick={() => { if (!dragging) { setSelected(null); setPanel("overview"); setEditingConn(null); setMultiSelected(new Set()); } }}>
             <defs>
               <radialGradient id="bg" cx="50%" cy="50%">
                 <stop offset="0%" stopColor="#111130" />
@@ -614,6 +697,7 @@ export default function App() {
               </div>
             </div>
             <div style={{ marginTop: 6, color: "#333" }}>Træk noder for at flytte</div>
+            <div style={{ marginTop: 3, color: "#333" }}>Shift+klik for at vælge flere</div>
           </div>
           {selected && <div style={{ position: "absolute", top: 12, left: 12, background: "#0d0d22cc", borderRadius: 8, padding: "6px 12px", border: "1px solid #7c6fff44", fontSize: 11, color: "#7c6fff" }}>Klik på lærredet for at fravælge</div>}
         </div>
