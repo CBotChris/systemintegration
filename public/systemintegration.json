@@ -30,10 +30,10 @@
     },
     {
       "id": "wms",
-      "name": "WMS / Lager",
-      "color": "#9b59b6",
+      "name": "Visma",
+      "color": "#3498db",
       "x": 650,
-      "y": 380
+      "y": 379
     },
     {
       "id": "email",
