@@ -367,8 +367,8 @@ export default function App() {
     const isDimmed = selected && !isHighlighted;
 
     // Color-code by direction when not dimmed
-    const baseColor = c.direction === "both" ? "#7c6fff" : c.direction === "from" ? "#2ecc71" : "#3498db";
-    const color = isDimmed ? "#1e1e2e" : isHighlighted ? baseColor : baseColor;
+    const baseColor = c.direction === "both" ? "#e8b84b" : c.direction === "from" ? "#2ecc71" : "#3498db";
+    const color = isDimmed ? "#1a3332" : isHighlighted ? baseColor : baseColor;
     const opacity = isDimmed ? 0.08 : isHighlighted ? 1 : 0.55;
     const strokeW = isHighlighted ? 3 : 2;
 
@@ -437,7 +437,7 @@ export default function App() {
         opacity={opacity}>
         {(isSelected || inChain || isMultiSel) && <circle r={r + 10} fill={s.color} opacity={0.12} />}
         {ringColor && <circle r={r + 4} fill="none" stroke={ringColor} strokeWidth={ringWidth} opacity={0.9} />}
-        <circle r={r} fill={isDimmed ? "#0d0d1a" : s.color} stroke="#0d0d1a" strokeWidth={2} />
+        <circle r={r} fill={isDimmed ? "#1a3332" : s.color} stroke="#1a3332" strokeWidth={2} />
         <text textAnchor="middle" dy="0.35em" fill="#fff" fontSize={Math.max(7, r * 0.34)} fontWeight="700" fontFamily="'DM Sans', sans-serif" style={{ pointerEvents: "none" }}>
           {s.name.length > 10 ? s.name.slice(0, 9) + "…" : s.name}
         </text>
@@ -446,8 +446,8 @@ export default function App() {
   };
 
   const btnStyle = (active) => ({
-    background: active ? "#7c6fff" : "transparent",
-    border: `1px solid ${active ? "#7c6fff" : "#2a2a4a"}`,
+    background: active ? "#e8b84b" : "transparent",
+    border: `1px solid ${active ? "#e8b84b" : "#2d5250"}`,
     color: active ? "#fff" : "#888",
     padding: "7px 13px", borderRadius: 8, cursor: "pointer",
     fontSize: 12, fontFamily: "'DM Sans'", transition: "all 0.15s"
@@ -460,17 +460,17 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a0a18", color: "#e0e0ff", fontFamily: "'DM Sans', 'Segoe UI', sans-serif", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", background: "#1a3332", color: "#d4ede9", fontFamily: "'DM Sans', 'Segoe UI', sans-serif", display: "flex", flexDirection: "column" }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
 
       {toast && (
-        <div style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 9999, background: toast.type === "success" ? "#0f2a1a" : "#2a0f0f", border: `1px solid ${toast.type === "success" ? "#2ecc71" : "#e74c3c"}`, color: toast.type === "success" ? "#2ecc71" : "#e74c3c", padding: "10px 20px", borderRadius: 10, fontSize: 13, pointerEvents: "none" }}>{toast.text}</div>
+        <div style={{ position: "fixed", top: 16, left: "50%", transform: "translateX(-50%)", zIndex: 9999, background: toast.type === "success" ? "#0f2a28" : "#2a1a0f", border: `1px solid ${toast.type === "success" ? "#2ecc71" : "#e74c3c"}`, color: toast.type === "success" ? "#2ecc71" : "#e74c3c", padding: "10px 20px", borderRadius: 10, fontSize: 13, pointerEvents: "none" }}>{toast.text}</div>
       )}
 
       {/* Header */}
-      <div style={{ padding: "14px 24px", borderBottom: "1px solid #1a1a3a", display: "flex", alignItems: "center", gap: 10, background: "#0d0d22", flexWrap: "wrap" }}>
-        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#7c6fff", boxShadow: "0 0 10px #7c6fff" }} />
-        <span style={{ fontFamily: "'Space Mono'", fontSize: 13, letterSpacing: 3, color: "#7c6fff", textTransform: "uppercase" }}>Systemintegration</span>
+      <div style={{ padding: "14px 24px", borderBottom: "1px solid #1a1a3a", display: "flex", alignItems: "center", gap: 10, background: "#1e3c3a", flexWrap: "wrap" }}>
+        <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#e8b84b", boxShadow: "0 0 10px #7c6fff" }} />
+        <span style={{ fontFamily: "'Space Mono'", fontSize: 13, letterSpacing: 3, color: "#e8b84b", textTransform: "uppercase" }}>Systemintegration</span>
         <div style={{ flex: 1 }} />
         <button onClick={() => setPanel(panel === "add-system" ? "overview" : "add-system")} style={btnStyle(panel === "add-system")}>+ System</button>
         <button onClick={() => { setNewConn(p => ({ ...p, from: panel === "add-connection" ? "" : (selected || p.from) })); setPanel(panel === "add-connection" ? "overview" : "add-connection"); }} style={btnStyle(panel === "add-connection")}>+ Forbindelse</button>
@@ -484,30 +484,30 @@ export default function App() {
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* Sidebar */}
-        <div style={{ width: 290, background: "#0d0d22", borderRight: "1px solid #1a1a3a", overflowY: "auto", padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ width: 290, background: "#1e3c3a", borderRight: "1px solid #1a1a3a", overflowY: "auto", padding: 18, display: "flex", flexDirection: "column", gap: 14 }}>
 
           {/* ADD SYSTEM */}
           {panel === "add-system" && (
-            <div style={{ background: "#13132a", borderRadius: 12, padding: 16, border: "1px solid #2a2a4a" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#7c6fff", marginBottom: 12, letterSpacing: 1 }}>NYT SYSTEM</div>
+            <div style={{ background: "#234442", borderRadius: 12, padding: 16, border: "1px solid #2a2a4a" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#e8b84b", marginBottom: 12, letterSpacing: 1 }}>NYT SYSTEM</div>
               <input placeholder="Systemnavn..." value={newSys.name} onChange={e => setNewSys(p => ({ ...p, name: e.target.value }))} onKeyDown={e => e.key === "Enter" && addSystem()}
-                style={{ width: "100%", background: "#1a1a3a", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 12px", color: "#fff", fontSize: 13, marginBottom: 10, boxSizing: "border-box" }} />
+                style={{ width: "100%", background: "#2d5250", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 12px", color: "#fff", fontSize: 13, marginBottom: 10, boxSizing: "border-box" }} />
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
                 {COLORS.map(c => <div key={c} onClick={() => setNewSys(p => ({ ...p, color: c }))} style={{ width: 22, height: 22, borderRadius: "50%", background: c, cursor: "pointer", border: newSys.color === c ? "2px solid #fff" : "2px solid transparent" }} />)}
               </div>
-              <button onClick={addSystem} style={{ width: "100%", background: "#7c6fff", border: "none", color: "#fff", padding: "9px", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Tilføj</button>
+              <button onClick={addSystem} style={{ width: "100%", background: "#e8b84b", border: "none", color: "#fff", padding: "9px", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Tilføj</button>
             </div>
           )}
 
           {/* ADD CONNECTION */}
           {panel === "add-connection" && (
-            <div style={{ background: "#13132a", borderRadius: 12, padding: 16, border: "1px solid #2a2a4a" }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: "#7c6fff", marginBottom: 12, letterSpacing: 1 }}>NY FORBINDELSE</div>
+            <div style={{ background: "#234442", borderRadius: 12, padding: 16, border: "1px solid #2a2a4a" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#e8b84b", marginBottom: 12, letterSpacing: 1 }}>NY FORBINDELSE</div>
               {["from", "to"].map(field => (
                 <div key={field} style={{ marginBottom: 8 }}>
                   <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>{field === "from" ? "Fra system" : "Til system"}</div>
                   <select value={newConn[field]} onChange={e => setNewConn(p => ({ ...p, [field]: e.target.value }))}
-                    style={{ width: "100%", background: "#1a1a3a", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 10px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}>
+                    style={{ width: "100%", background: "#2d5250", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 10px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}>
                     <option value="">Vælg...</option>
                     {systems.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                   </select>
@@ -525,13 +525,13 @@ export default function App() {
                   ];
                   return (
                     <select value={newConn.direction} onChange={e => setNewConn(p => ({ ...p, direction: e.target.value }))}
-                      style={{ width: "100%", background: "#1a1a3a", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 10px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}>
+                      style={{ width: "100%", background: "#2d5250", border: "1px solid #2a2a5a", borderRadius: 8, padding: "8px 10px", color: "#fff", fontSize: 13, boxSizing: "border-box" }}>
                       {dynDirs.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
                     </select>
                   );
                 })()}
               </div>
-              <button onClick={addConnection} style={{ width: "100%", background: "#7c6fff", border: "none", color: "#fff", padding: "9px", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Tilføj</button>
+              <button onClick={addConnection} style={{ width: "100%", background: "#e8b84b", border: "none", color: "#fff", padding: "9px", borderRadius: 8, cursor: "pointer", fontWeight: 600, fontSize: 13 }}>Tilføj</button>
             </div>
           )}
 
@@ -544,15 +544,15 @@ export default function App() {
             const downstream = [...(chain?.downstream || [])];
             return (
               <div>
-                <button onClick={() => { setSelected(null); setPanel("overview"); setEditingConn(null); }} style={{ background: "none", border: "none", color: "#7c6fff", cursor: "pointer", fontSize: 12, marginBottom: 12, padding: 0 }}>← Tilbage</button>
+                <button onClick={() => { setSelected(null); setPanel("overview"); setEditingConn(null); }} style={{ background: "none", border: "none", color: "#e8b84b", cursor: "pointer", fontSize: 12, marginBottom: 12, padding: 0 }}>← Tilbage</button>
                 <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
                   <div style={{ width: 14, height: 14, borderRadius: "50%", background: sys.color, flexShrink: 0 }} />
                   <input
                     value={sys.name}
                     onChange={e => setSystems(prev => prev.map(s => s.id === selected ? { ...s, name: e.target.value } : s))}
-                    style={{ fontWeight: 700, fontSize: 15, background: "transparent", border: "none", borderBottom: "1px solid #2a2a5a", color: "#e0e0ff", outline: "none", flex: 1, padding: "2px 0", fontFamily: "'DM Sans', sans-serif" }}
-                    onFocus={e => e.target.style.borderBottomColor = "#7c6fff"}
-                    onBlur={e => e.target.style.borderBottomColor = "#2a2a5a"}
+                    style={{ fontWeight: 700, fontSize: 15, background: "transparent", border: "none", borderBottom: "1px solid #2a2a5a", color: "#d4ede9", outline: "none", flex: 1, padding: "2px 0", fontFamily: "'DM Sans', sans-serif" }}
+                    onFocus={e => e.target.style.borderBottomColor = "#e8b84b"}
+                    onBlur={e => e.target.style.borderBottomColor = "#306d6b"}
                   />
                 </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 14 }}>
@@ -570,7 +570,7 @@ export default function App() {
                   {upstream.map(id => {
                     const s = getSystem(id);
                     return s ? (
-                      <div key={id} onClick={() => setSelected(id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 10px", borderRadius: 8, background: "#0d1a2a", marginBottom: 4, cursor: "pointer", border: "1px solid #1a2a3a" }}>
+                      <div key={id} onClick={() => setSelected(id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 10px", borderRadius: 8, background: "#1a3330", marginBottom: 4, cursor: "pointer", border: "1px solid #1a2a3a" }}>
                         <div style={{ width: 7, height: 7, borderRadius: "50%", background: s.color }} />
                         <span style={{ flex: 1, fontSize: 12 }}>{s.name}</span>
                         <span style={{ color: "#3498db", fontSize: 12 }}>→</span>
@@ -585,7 +585,7 @@ export default function App() {
                   {downstream.map(id => {
                     const s = getSystem(id);
                     return s ? (
-                      <div key={id} onClick={() => setSelected(id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 10px", borderRadius: 8, background: "#0a1a0a", marginBottom: 4, cursor: "pointer", border: "1px solid #1a2a1a" }}>
+                      <div key={id} onClick={() => setSelected(id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 10px", borderRadius: 8, background: "#1a3328", marginBottom: 4, cursor: "pointer", border: "1px solid #1a2a1a" }}>
                         <div style={{ width: 7, height: 7, borderRadius: "50%", background: s.color }} />
                         <span style={{ flex: 1, fontSize: 12 }}>{s.name}</span>
                         <span style={{ color: "#2ecc71", fontSize: 12 }}>→</span>
@@ -595,7 +595,7 @@ export default function App() {
                 </>}
 
                 {/* Connections — editable */}
-                <div style={{ fontSize: 10, color: "#7c6fff", letterSpacing: 1, fontWeight: 700, marginTop: 14, marginBottom: 6 }}>FORBINDELSER — klik for at redigere</div>
+                <div style={{ fontSize: 10, color: "#e8b84b", letterSpacing: 1, fontWeight: 700, marginTop: 14, marginBottom: 6 }}>FORBINDELSER — klik for at redigere</div>
                 {myConns.length === 0 && <div style={{ color: "#444", fontSize: 12 }}>Ingen forbindelser</div>}
                 {myConns.map((c) => {
                   const other = getSystem(c.from === selected ? c.to : c.from);
@@ -604,19 +604,19 @@ export default function App() {
                   return other ? (
                     <div key={c.idx} style={{ marginBottom: 6 }}>
                       <div onClick={() => setEditingConn(isEditing ? null : c.idx)}
-                        style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 8, background: isEditing ? "#1a1a3a" : "#13132a", border: `1px solid ${isEditing ? "#7c6fff" : "#1a1a3a"}`, cursor: "pointer", fontSize: 12, transition: "all 0.15s" }}>
+                        style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", borderRadius: 8, background: isEditing ? "#2d5250" : "#234442", border: `1px solid ${isEditing ? "#e8b84b" : "#2d5250"}`, cursor: "pointer", fontSize: 12, transition: "all 0.15s" }}>
                         <div style={{ width: 6, height: 6, borderRadius: "50%", background: other.color, flexShrink: 0 }} />
                         <span style={{ flex: 1 }}>{other.name}</span>
-                        <span style={{ color: "#7c6fff", fontWeight: 700, fontSize: 14 }}>{dir}</span>
+                        <span style={{ color: "#e8b84b", fontWeight: 700, fontSize: 14 }}>{dir}</span>
                         <span style={{ color: "#444", fontSize: 10 }}>✎</span>
                       </div>
                       {isEditing && (
-                        <div style={{ background: "#0f0f22", border: "1px solid #2a2a5a", borderRadius: 8, padding: 10, marginTop: 4 }}>
+                        <div style={{ background: "#1a3332", border: "1px solid #2a2a5a", borderRadius: 8, padding: 10, marginTop: 4 }}>
                           <div style={{ fontSize: 10, color: "#666", marginBottom: 8 }}>Vælg retning:</div>
                           <div style={{ display: "flex", flexDirection: "column", gap: 5, marginBottom: 10 }}>
                             {DIRECTIONS.map(d => (
                               <button key={d.value} onClick={() => updateConnectionDirection(c.idx, d.value)}
-                                style={{ background: c.direction === d.value ? "#7c6fff" : "#1a1a3a", border: `1px solid ${c.direction === d.value ? "#7c6fff" : "#2a2a5a"}`, color: c.direction === d.value ? "#fff" : "#aaa", padding: "6px 10px", borderRadius: 6, cursor: "pointer", fontSize: 12, textAlign: "left" }}>
+                                style={{ background: c.direction === d.value ? "#e8b84b" : "#2d5250", border: `1px solid ${c.direction === d.value ? "#e8b84b" : "#306d6b"}`, color: c.direction === d.value ? "#fff" : "#aaa", padding: "6px 10px", borderRadius: 6, cursor: "pointer", fontSize: 12, textAlign: "left" }}>
                                 {d.label}
                               </button>
                             ))}
@@ -644,9 +644,9 @@ export default function App() {
                 const connCount = connections.filter(c => c.from === s.id || c.to === s.id).length;
                 return (
                   <div key={s.id} onClick={() => { setSelected(s.id); setPanel("detail"); }}
-                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 10, marginBottom: 5, cursor: "pointer", background: "#13132a", border: "1px solid #1a1a3a", transition: "border-color 0.15s" }}
+                    style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderRadius: 10, marginBottom: 5, cursor: "pointer", background: "#234442", border: "1px solid #1a1a3a", transition: "border-color 0.15s" }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = s.color}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = "#1a1a3a"}>
+                    onMouseLeave={e => e.currentTarget.style.borderColor = "#2d5250"}>
                     <div style={{ width: 10, height: 10, borderRadius: "50%", background: s.color }} />
                     <span style={{ flex: 1, fontSize: 13 }}>{s.name}</span>
                     <span style={{ fontSize: 11, color: "#555" }}>{connCount} links</span>
@@ -664,14 +664,14 @@ export default function App() {
             onClick={() => { if (!dragging) { setSelected(null); setPanel("overview"); setEditingConn(null); setMultiSelected(new Set()); } }}>
             <defs>
               <radialGradient id="bg" cx="50%" cy="50%">
-                <stop offset="0%" stopColor="#111130" />
-                <stop offset="100%" stopColor="#0a0a18" />
+                <stop offset="0%" stopColor="#1e3c3a" />
+                <stop offset="100%" stopColor="#1a3332" />
               </radialGradient>
             </defs>
             <rect width="100%" height="100%" fill="url(#bg)" />
             {Array.from({ length: 20 }).map((_, i) =>
               Array.from({ length: 14 }).map((_, j) => (
-                <circle key={`${i}-${j}`} cx={i * 50} cy={j * 50} r={1} fill="#ffffff06" />
+                <circle key={`${i}-${j}`} cx={i * 50} cy={j * 50} r={1} fill="#ffffff08" />
               ))
             )}
             {connections.map((c, i) => renderArrow(c, i))}
@@ -679,9 +679,9 @@ export default function App() {
           </svg>
 
           {/* Legend */}
-          <div style={{ position: "absolute", bottom: 16, right: 16, background: "#0d0d22dd", borderRadius: 10, padding: "10px 14px", border: "1px solid #1a1a3a", fontSize: 11, color: "#777" }}>
+          <div style={{ position: "absolute", bottom: 16, right: 16, background: "#1e3c3add", borderRadius: 10, padding: "10px 14px", border: "1px solid #1a1a3a", fontSize: 11, color: "#777" }}>
             <div style={{ marginBottom: 6, color: "#444", letterSpacing: 1 }}>LEGENDE</div>
-            {[["→", "Envejs ud", "#2ecc71"], ["←", "Envejs ind", "#3498db"], ["↔", "Bidirektionel", "#7c6fff"]].map(([sym, label, col]) => (
+            {[["→", "Envejs ud", "#2ecc71"], ["←", "Envejs ind", "#3498db"], ["↔", "Bidirektionel", "#e8b84b"]].map(([sym, label, col]) => (
               <div key={sym} style={{ display: "flex", gap: 8, marginBottom: 3, alignItems: "center" }}>
                 <span style={{ fontFamily: "monospace", color: col, width: 14 }}>{sym}</span>
                 <span>{label}</span>
@@ -700,7 +700,7 @@ export default function App() {
             <div style={{ marginTop: 6, color: "#333" }}>Træk noder for at flytte</div>
             <div style={{ marginTop: 3, color: "#333" }}>Shift+klik for at vælge flere</div>
           </div>
-          {selected && <div style={{ position: "absolute", top: 12, left: 12, background: "#0d0d22cc", borderRadius: 8, padding: "6px 12px", border: "1px solid #7c6fff44", fontSize: 11, color: "#7c6fff" }}>Klik på lærredet for at fravælge</div>}
+          {selected && <div style={{ position: "absolute", top: 12, left: 12, background: "#1e3c3acc", borderRadius: 8, padding: "6px 12px", border: "1px solid #7c6fff44", fontSize: 11, color: "#e8b84b" }}>Klik på lærredet for at fravælge</div>}
         </div>
       </div>
     </div>
