@@ -97,6 +97,10 @@ export default function App() {
   const [groupDragStart, setGroupDragStart] = useState(null); // SVG coords when group drag started
   const svgRef = useRef();
   const fileInputRef = useRef();
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({ x: 0, y: 0 });
+  const isPanning = useRef(false);
+  const panStart = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (window.XLSX) return;
@@ -186,14 +190,16 @@ export default function App() {
     setTimeout(() => setToast(null), 4000);
   };
 
+  const dragMoved = useRef(false);
+
   const handleMouseDown = useCallback((e, id) => {
     e.stopPropagation();
+    dragMoved.current = false;
     const svg = svgRef.current;
     const pt = svg.createSVGPoint();
     pt.x = e.clientX; pt.y = e.clientY;
     const svgP = pt.matrixTransform(svg.getScreenCTM().inverse());
     if (multiSelected.has(id) && multiSelected.size > 1) {
-      // Start group drag
       setGroupDragStart({ x: svgP.x, y: svgP.y });
       setDragging("__group__");
     } else {
@@ -205,6 +211,7 @@ export default function App() {
 
   const handleMouseMove = useCallback((e) => {
     if (!dragging) return;
+    dragMoved.current = true;
     const svg = svgRef.current;
     const pt = svg.createSVGPoint();
     pt.x = e.clientX; pt.y = e.clientY;
@@ -363,7 +370,6 @@ export default function App() {
 
     let opacity = 1;
     if (isDimmed) opacity = 0.1;
-    else if (!selected && !isMultiSel && hasNoConnections) opacity = 0.4;
 
     const ringColor = isMultiSel ? "#f39c12" : isSelected ? "#fff" : isUpstream ? "#3498db" : isDownstream ? "#2ecc71" : isDirect ? s.color : null;
     const ringWidth = isSelected || isMultiSel ? 3 : 2;
@@ -374,8 +380,8 @@ export default function App() {
         onMouseDown={(e) => handleMouseDown(e, s.id)}
         onClick={(e) => {
           e.stopPropagation();
+          if (dragMoved.current) return; // was a drag, not a click
           if (e.shiftKey) {
-            // Shift-click: toggle in multiSelected, clear single select
             setMultiSelected(prev => {
               const next = new Set(prev);
               next.has(s.id) ? next.delete(s.id) : next.add(s.id);
@@ -383,7 +389,6 @@ export default function App() {
             });
             setSelected(null); setPanel("overview");
           } else {
-            // Normal click: clear multiselect, single select
             setMultiSelected(new Set());
             setSelected(s.id === selected ? null : s.id);
             setPanel(s.id === selected ? "overview" : "detail");
@@ -614,7 +619,8 @@ export default function App() {
         </div>
 
         {/* Canvas */}
-        <div style={{ flex: 1, position: "relative" }}>
+        <div style={{ flex: 1, position: "relative", overflow: "hidden" }}
+          onWheel={(e) => { e.preventDefault(); const delta = e.deltaY > 0 ? 0.9 : 1.1; setZoom(z => Math.min(3, Math.max(0.3, z * delta))); }}>
           <svg ref={svgRef} width="100%" height="100%" style={{ display: "block", minHeight: 520 }}
             onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}
             onClick={() => { if (!dragging) { setSelected(null); setPanel("overview"); setEditingConn(null); setMultiSelected(new Set()); } }}>
@@ -630,8 +636,10 @@ export default function App() {
                 <circle key={`${i}-${j}`} cx={i * 50} cy={j * 50} r={1} fill="#ffffff08" />
               ))
             )}
+            <g transform={`scale(${zoom})`} style={{ transformOrigin: "center" }}>
             {connections.map((c, i) => renderArrow(c, i))}
             {systems.map(s => renderNode(s))}
+            </g>
           </svg>
 
           {/* Legend */}
@@ -655,6 +663,11 @@ export default function App() {
             </div>
             <div style={{ marginTop: 6, color: "#333" }}>Træk noder for at flytte</div>
             <div style={{ marginTop: 3, color: "#333" }}>Shift+klik for at vælge flere</div>
+          </div>
+          <div style={{ position: "absolute", bottom: 16, left: 16, display: "flex", flexDirection: "column", gap: 4 }}>
+            <button onClick={() => setZoom(z => Math.min(3, z * 1.2))} style={{ width: 30, height: 30, background: "#1e3c3add", border: "1px solid #2d5250", color: "#d4ede9", borderRadius: 6, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+            <button onClick={() => setZoom(1)} style={{ width: 30, height: 30, background: "#1e3c3add", border: "1px solid #2d5250", color: "#d4ede9", borderRadius: 6, cursor: "pointer", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" }}>1:1</button>
+            <button onClick={() => setZoom(z => Math.max(0.3, z * 0.8))} style={{ width: 30, height: 30, background: "#1e3c3add", border: "1px solid #2d5250", color: "#d4ede9", borderRadius: 6, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
           </div>
           {selected && <div style={{ position: "absolute", top: 12, left: 12, background: "#1e3c3acc", borderRadius: 8, padding: "6px 12px", border: "1px solid #7c6fff44", fontSize: 11, color: "#e8b84b" }}>Klik på lærredet for at fravælge</div>}
         </div>
