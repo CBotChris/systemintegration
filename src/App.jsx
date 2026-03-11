@@ -141,58 +141,14 @@ export default function App() {
     try { localStorage.setItem("si_connections", JSON.stringify(connections)); } catch {}
   }, [connections]);
 
-  const exportJSON = async () => {
+  const exportJSON = () => {
     const data = JSON.stringify({ systems, connections }, null, 2);
-    const token = import.meta.env.VITE_GITHUB_TOKEN;
-    const repo = "cbotchris/systemintegration";
-    const filePath = "systemintegration.json";
-    const branch = "gh-pages";
-
-    if (token) {
-      try {
-        showToast("success", "Gemmer til GitHub...");
-        // Check if file already exists (need its SHA to update)
-        let sha = undefined;
-        const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`, {
-          headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }
-        });
-        if (check.ok) {
-          const existing = await check.json();
-          sha = existing.sha;
-        }
-        // Push file
-        const res = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: "Opdater systemintegration kort",
-            content: btoa(unescape(encodeURIComponent(data))),
-            branch,
-            ...(sha ? { sha } : {})
-          })
-        });
-        if (res.ok) {
-          showToast("success", "✓ Gemt og delt! Kolleger ser det nye kort om ~1 minut.");
-        } else {
-          const err = await res.json();
-          throw new Error(err.message || "Ukendt fejl");
-        }
-      } catch (err) {
-        showToast("error", `GitHub fejl: ${err.message} — downloader lokalt i stedet.`);
-        _downloadJSON(data);
-      }
-    } else {
-      _downloadJSON(data);
-    }
-  };
-
-  const _downloadJSON = (data) => {
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = "systemintegration.json"; a.click();
     URL.revokeObjectURL(url);
-    showToast("success", "Downloadet lokalt — upload til GitHub for at dele.");
+    showToast("success", "Gemt lokalt — erstat systemintegration.json på GitHub for at dele med kolleger.");
   };
 
   const importJSONRef = useRef();
@@ -477,8 +433,8 @@ export default function App() {
         <input ref={fileInputRef} type="file" accept=".xlsx,.xls" onChange={handleFileImport} style={{ display: "none" }} />
         <button onClick={() => fileInputRef.current?.click()} style={btnStyle(false)}>↑ Excel</button>
         <input ref={importJSONRef} type="file" accept=".json" onChange={importJSON} style={{ display: "none" }} />
-        <button onClick={exportJSON} style={btnStyle(false)} title="Gem kort som JSON-fil">↓ Gem</button>
-        <button onClick={() => importJSONRef.current?.click()} style={btnStyle(false)} title="Indlæs gemt JSON-fil">↑ Indlæs</button>
+        <button onClick={exportJSON} style={btnStyle(false)} title="Gem kort som JSON-fil">↓ Gem lokalt</button>
+        <button onClick={() => importJSONRef.current?.click()} style={btnStyle(false)} title="Indlæs gemt JSON-fil">↑ Indlæs lokalt</button>
         <button onClick={resetToDefault} style={{ ...btnStyle(false), color: "#e74c3c55", borderColor: "#e74c3c22" }} title="Nulstil til eksempeldata">↺</button>
       </div>
 
