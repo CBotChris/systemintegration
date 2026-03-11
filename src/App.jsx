@@ -108,7 +108,7 @@ export default function App() {
   // On first load: GitHub JSON is always the source of truth.
   // localStorage is only used as fallback if the JSON file doesn't exist yet.
   useEffect(() => {
-    fetch("/systemintegration.json?t=" + Date.now())
+    fetch("/systemintegration/systemintegration.json?t=" + Date.now())
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(({ systems: s, connections: c }) => {
         if (Array.isArray(s) && Array.isArray(c)) {
@@ -145,14 +145,15 @@ export default function App() {
     const data = JSON.stringify({ systems, connections }, null, 2);
     const token = import.meta.env.VITE_GITHUB_TOKEN;
     const repo = "cbotchris/systemintegration";
-    const filePath = "public/systemintegration.json";
+    const filePath = "systemintegration.json";
+    const branch = "gh-pages";
 
     if (token) {
       try {
         showToast("success", "Gemmer til GitHub...");
         // Check if file already exists (need its SHA to update)
         let sha = undefined;
-        const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        const check = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`, {
           headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" }
         });
         if (check.ok) {
@@ -166,6 +167,7 @@ export default function App() {
           body: JSON.stringify({
             message: "Opdater systemintegration kort",
             content: btoa(unescape(encodeURIComponent(data))),
+            branch,
             ...(sha ? { sha } : {})
           })
         });
