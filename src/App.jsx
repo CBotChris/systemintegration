@@ -108,7 +108,7 @@ export default function App() {
   // On first load: GitHub JSON is always the source of truth.
   // localStorage is only used as fallback if the JSON file doesn't exist yet.
   useEffect(() => {
-    fetch("./systemintegration.json?t=" + Date.now())
+    fetch("/systemintegration.json?t=" + Date.now())
       .then(r => { if (!r.ok) throw new Error(); return r.json(); })
       .then(({ systems: s, connections: c }) => {
         if (Array.isArray(s) && Array.isArray(c)) {
@@ -145,7 +145,7 @@ export default function App() {
     const data = JSON.stringify({ systems, connections }, null, 2);
     const token = import.meta.env.VITE_GITHUB_TOKEN;
     const repo = "cbotchris/systemintegration";
-    const filePath = "systemintegration.json";
+    const filePath = "public/systemintegration.json";
 
     if (token) {
       try {
