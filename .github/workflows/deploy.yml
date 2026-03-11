@@ -17,6 +17,8 @@ jobs:
       - run: npm install
 
       - run: npm run build
+        env:
+          VITE_GITHUB_TOKEN: ${{ secrets.VITE_GITHUB_TOKEN }}
 
       - name: Deploy til gh-pages
         uses: peaceiris/actions-gh-pages@v4
