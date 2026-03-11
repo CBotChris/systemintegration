@@ -2,7 +2,7 @@
   "systems": [
     {
       "id": "erp",
-      "name": "ERP System",
+      "name": "EG Bolig",
       "color": "#e74c3c",
       "x": 400,
       "y": 250
@@ -16,15 +16,15 @@
     },
     {
       "id": "webshop",
-      "name": "Webshop",
+      "name": "Azure AD",
       "color": "#2ecc71",
-      "x": 620,
-      "y": 150
+      "x": 395,
+      "y": 98
     },
     {
       "id": "bi",
-      "name": "BI / Rapportering",
-      "color": "#f39c12",
+      "name": "Cognos",
+      "color": "#3498db",
       "x": 400,
       "y": 430
     },
@@ -41,6 +41,13 @@
       "color": "#e91e63",
       "x": 160,
       "y": 360
+    },
+    {
+      "id": "hr_on_1773210621103",
+      "name": "HR ON",
+      "color": "#e67e22",
+      "x": 534.8789293111283,
+      "y": 91.13592126036099
     }
   ],
   "connections": [
@@ -57,7 +64,7 @@
     {
       "from": "erp",
       "to": "bi",
-      "direction": "to"
+      "direction": "from"
     },
     {
       "from": "erp",
@@ -70,8 +77,13 @@
       "direction": "from"
     },
     {
-      "from": "webshop",
-      "to": "wms",
+      "from": "email",
+      "to": "erp",
+      "direction": "both"
+    },
+    {
+      "from": "hr_on_1773210621103",
+      "to": "webshop",
       "direction": "to"
     }
   ]
