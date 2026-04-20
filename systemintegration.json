@@ -1,0 +1,174 @@
+{
+  "systems": [
+    {
+      "id": "erp",
+      "name": "EG Bolig",
+      "color": "#e74c3c",
+      "x": 403.0000305175781,
+      "y": 488
+    },
+    {
+      "id": "crm",
+      "name": "NTI FM",
+      "color": "#e91e63",
+      "x": 361,
+      "y": 218.99999237060547
+    },
+    {
+      "id": "webshop",
+      "name": "Azure AD",
+      "color": "#2ecc71",
+      "x": 819,
+      "y": 526
+    },
+    {
+      "id": "bi",
+      "name": "Cognos",
+      "color": "#3498db",
+      "x": 636,
+      "y": 68
+    },
+    {
+      "id": "wms",
+      "name": "Visma",
+      "color": "#3498db",
+      "x": 859,
+      "y": 662
+    },
+    {
+      "id": "civica.dk_1773213621405",
+      "name": "Civica.dk",
+      "color": "#e67e22",
+      "x": 520.4433992390484,
+      "y": 772.5548935770295
+    },
+    {
+      "id": "myfone_1773213691761",
+      "name": "Myfone",
+      "color": "#8bc34a",
+      "x": 887.358610254503,
+      "y": 247.33307208162387
+    },
+    {
+      "id": "nti_bidco_1773220139296",
+      "name": "NTI BIDCO",
+      "color": "#e91e63",
+      "x": 122.95155159127921,
+      "y": 166.5120314390863
+    },
+    {
+      "id": "minenergi2_1773220209699",
+      "name": "MinEnergi2",
+      "color": "#9b59b6",
+      "x": 632.0717885947219,
+      "y": 290.4314794430202
+    },
+    {
+      "id": "xink_1773220231423",
+      "name": "Xink",
+      "color": "#8bc34a",
+      "x": 938.489281311179,
+      "y": 404.42426008554776
+    },
+    {
+      "id": "e-bolig_1773222046219",
+      "name": "E-bolig",
+      "color": "#e74c3c",
+      "x": 154.91966681117628,
+      "y": 544.7633496935388
+    },
+    {
+      "id": "e-syn_1776676634494",
+      "name": "E-syn",
+      "color": "#e74c3c",
+      "x": 238.93027621864866,
+      "y": 662.9975712052412
+    },
+    {
+      "id": "forma_1776676731798",
+      "name": "Forma",
+      "color": "#e91e63",
+      "x": 301.0813096715816,
+      "y": 63.98770691635818
+    },
+    {
+      "id": "nti_pm_1776676857173",
+      "name": "NTI PM",
+      "color": "#e91e63",
+      "x": 29.220842736695943,
+      "y": 53.39244073327933
+    }
+  ],
+  "connections": [
+    {
+      "from": "erp",
+      "to": "crm",
+      "direction": "both"
+    },
+    {
+      "from": "erp",
+      "to": "bi",
+      "direction": "from"
+    },
+    {
+      "from": "erp",
+      "to": "wms",
+      "direction": "to"
+    },
+    {
+      "from": "civica.dk_1773213621405",
+      "to": "erp",
+      "direction": "to"
+    },
+    {
+      "from": "myfone_1773213691761",
+      "to": "bi",
+      "direction": "from"
+    },
+    {
+      "from": "webshop",
+      "to": "myfone_1773213691761",
+      "direction": "from"
+    },
+    {
+      "from": "nti_bidco_1773220139296",
+      "to": "crm",
+      "direction": "both"
+    },
+    {
+      "from": "xink_1773220231423",
+      "to": "webshop",
+      "direction": "to"
+    },
+    {
+      "from": "e-bolig_1773222046219",
+      "to": "erp",
+      "direction": "both"
+    },
+    {
+      "from": "crm",
+      "to": "bi",
+      "direction": "from"
+    },
+    {
+      "from": "e-syn_1776676634494",
+      "to": "erp",
+      "direction": "both"
+    },
+    {
+      "from": "forma_1776676731798",
+      "to": "crm",
+      "direction": "both"
+    },
+    {
+      "from": "forma_1776676731798",
+      "to": "nti_bidco_1773220139296",
+      "direction": "both"
+    },
+    {
+      "from": "webshop",
+      "to": "bi",
+      "direction": "from"
+    }
+  ]
+}
